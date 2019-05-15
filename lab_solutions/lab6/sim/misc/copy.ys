@@ -1,0 +1,55 @@
+# Name: Meng Yit Koh
+# ID: 517030990022
+
+	.pos	0
+
+init:	irmovq	stack, %rsp
+	irmovq	stack, %rbp
+	irmovq	$3, %rcx
+	pushq	%rcx
+	irmovq	dest, %rcx
+	pushq	%rcx
+	irmovq	src, %rcx
+	pushq	%rcx
+	call	copy_block
+	halt
+
+copy_block:	
+	pushq	%rbp
+	rrmovq	%rsp, %rbp
+	# prepare register with function parameters
+	mrmovq	16(%rbp), %rsi
+	mrmovq	24(%rbp), %rdi
+	mrmovq	32(%rbp), %rdx
+	irmovq	$0, %rax
+loop:	andq	%rdx, %rdx
+	jle	end
+	irmovq	$8, %r8
+	mrmovq	0(%rsi), %r9
+	addq	%r8, %rsi
+	rmmovq	%r9, 0(%rdi)
+	addq	%r8, %rdi
+	xorq	%r9, %rax
+	irmovq	$1, %r8
+	subq	%r8, %rdx
+	jmp	loop
+end:	rrmovq	%rbp, %rsp
+	popq	%rbp
+	ret
+
+	
+	.align	8
+
+# Source block
+src:	.quad	0x00a
+	.quad	0x0b0
+	.quad	0xc00
+
+# Destination block
+dest:	.quad	0x111
+	.quad	0x222
+	.quad	0x333
+
+	.pos	0x300
+stack:
+

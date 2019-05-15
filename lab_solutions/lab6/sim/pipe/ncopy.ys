@@ -1,0 +1,85 @@
+#/* $begin ncopy-ys */
+##################################################################
+# ncopy.ys - Copy a src block of len words to dst.
+# Return the number of positive words (>0) contained in src.
+#
+# Include your name and ID here.
+# Name: Meng Yit Koh
+# ID: 517030990022
+# Describe how and why you modified the baseline code.
+# There are 3 things i kept in mind when modifying source code to improve benchmark:
+# - load-use hazard
+# - minimize ret
+# - reduce branch misprediction
+# - use loop unrolling
+##################################################################
+# Do not modify this portion
+# Function prologue.
+# %rdi = src, %rsi = dst, %rdx = len
+ncopy:
+
+##################################################################
+# You can modify this portion
+	# Loop header
+	iaddq	$-5, %rdx	# len <= k-1?
+	jg	loop1		# if so, goto loop1:
+	jmp	ch		# else, goto ch:
+loop1:	mrmovq	(%rdi), %r10	# read val from src...
+	iaddq	$48, %rdi	# 
+	rmmovq	%r10, (%rsi)	# ...and store it to dst
+	andq	%r10, %r10	# val <= 0?
+	jle	loop2		# true, goto loop2:
+	iaddq	$1, %rax	# false, ++count
+loop2:	mrmovq	-40(%rdi), %r10	# read val from 2nd src...
+	iaddq	$48, %rsi	# 
+	rmmovq	%r10, -40(%rsi)	# ...and store it to 2nd dst
+	andq	%r10, %r10	# val <= 0?
+	mrmovq  -32(%rdi), %r10 # read val from 3rd src...
+	jle	loop3		# true, goto loop3:
+	iaddq	$1, %rax	# false, ++count
+loop3:	rmmovq	%r10, -32(%rsi)	# ...and store it to 3rd dst
+	andq	%r10, %r10	# val <= 0?
+	mrmovq  -24(%rdi), %r10 # read val from 4th src...
+	jle	loop4		# true, goto loop4:
+	iaddq	$1, %rax	# false, ++count
+loop4:	rmmovq	%r10, -24(%rsi)	# ...and store it to 4th dst
+	andq	%r10, %r10	# val <= 0?
+	mrmovq  -16(%rdi), %r10 # read val from 5th src...
+	jle	loop5		# true, goto loop5:
+	iaddq	$1, %rax	# false, ++count
+loop5:	rmmovq	%r10, -16(%rsi)	# ...and store it to 5th dst
+	andq	%r10, %r10	# val <= 0?
+	mrmovq  -8(%rdi), %r10 	# read val from 6th src...
+	jle	loop6		# true, goto loop6:
+	iaddq	$1, %rax	# false, ++count
+loop6:	rmmovq  %r10, -8(%rsi)  # ...and store it to 6th dst
+	andq	%r10, %r10	# val <= 0?
+        jle     cont		# true, goto cont:
+        iaddq   $1, %rax        # false, ++count
+cont:	iaddq	$-6, %rdx	# len - 8, len >= 8?
+	jg	loop1		# true, goto loop1
+
+ch:	iaddq	$5, %rdx	# 
+	jg	remain		# 
+	ret 			# 
+
+remain:	mrmovq	(%rdi), %r10	# 
+	iaddq	$8, %rdi	# 
+	rmmovq	%r10, (%rsi)	# 
+	andq	%r10, %r10	# 
+	jle	next		# 
+	iaddq	$1, %rax	# 
+next:	iaddq	$8, %rsi	# 
+	iaddq	$-1, %rdx	# 
+	jg	remain		# 
+
+
+##################################################################
+# Do not modify the following section of code
+# Function epilogue.
+Done:
+	ret
+##################################################################
+# Keep the following label at the end of your function
+End:
+#/* $end ncopy-ys */

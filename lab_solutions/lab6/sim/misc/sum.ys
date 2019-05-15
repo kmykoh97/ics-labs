@@ -1,0 +1,49 @@
+# Name: Meng Yit Koh
+# ID: 517030990022
+
+	.pos	0
+
+init:	irmovq	stack, %rsp # set up stack pointer
+	irmovq	stack, %rbp
+	call	main
+	halt
+
+main:	pushq 	%rbp # initialise stack pointer after function call
+	rrmovq	%rsp, %rbp
+	irmovq	ele1, %rcx # set up pointer for first linked list element
+	pushq	%rcx
+	call	sum_list
+	rrmovq	%rbp, %rsp # restore stack pointer
+	popq	%rbp
+	ret
+		
+sum_list:
+	pushq	%rbp # initialise stack pointer after function call
+	rrmovq	%rsp, %rbp
+	mrmovq	16(%rbp), %rcx
+	xorq	%rax, %rax # reset %rax to 0
+link:	andq	%rcx, %rcx
+	je	end
+	mrmovq	0(%rcx), %rdx
+	addq	%rdx, %rax
+	mrmovq	8(%rcx), %rcx
+	jmp	link
+end:	rrmovq	%rbp, %rsp # restore stack pointer
+	popq	%rbp
+	ret
+		
+# Sample linked list
+	.align	8
+		
+ele1:	.quad	0x00a
+	.quad	ele2
+ele2:	.quad	0x0b0
+	.quad	ele3
+ele3:	.quad	0xc00
+	.quad	0
+
+# allocate space for program stack
+	.pos	0x200
+stack:		
+
+

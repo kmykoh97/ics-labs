@@ -1,0 +1,117 @@
+/*
+ * BUG#0
+ * description: 
+     miss semicolon
+ * location: 
+ *   int a = 10  (line 18)
+ * evidence: 
+ *   test.c:19: error: two or more data types in declaration specifiers
+ */
+
+BUG#1
+description:
+	missing semicolon
+location:
+	line 58
+evidence:
+gen_sort.c:60:1: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘static’
+ static long cur_rec = 0;
+
+
+BUG#2
+description:
+	missing semicolon
+location:
+	line 61
+evidence:
+gen_sort.c:54:9: error: expected ‘;’, identifier or ‘(’ before ‘struct’
+ typedef struct record { 
+
+
+
+BUG#3
+description:
+	missing }
+location:
+	line 188
+evidence:
+gen_sort.c: At top level:
+gen_sort.c:194:2: error: expected identifier or ‘(’ before ‘while’
+  while (cur_rec < rec_max) {
+
+gen_sort.c:212:2: error: expected identifier or ‘(’ before ‘return’
+  return 0;
+
+
+
+BUG#4
+description:
+	missing library inclusion
+location:
+	line 41
+evidence:
+gen_sort.c:196:18: warning: incompatible implicit declaration of built-in function ‘fwrite’
+gen_sort.c:196:18: note: include ‘<stdio.h>’ or provide a declaration of ‘fwrite’
+gen_sort.c:200:4: warning: implicit declaration of function ‘fclose’ [-Wimplicit-function-declaration]
+    fclose(file);
+
+
+
+BUG#5
+description:
+	wrong type class
+location:
+	line 114
+evidence:
+gen_sort.c:114:9: error: unknown type name ‘record’; did you mean ‘record_t’?
+ gen_rec(record *rec)
+
+
+
+BUG#6
+description:
+	wrong space size
+location:
+	line 181
+evidence:
+	buffer size =  nrec size? doesnt make sense
+
+
+
+BUG#7
+description:
+	not enough addant
+location:
+	line 49
+evidence:
+	description clearly stated 3 things but only 2 things added
+
+
+
+BUG#8
+description:
+	wrong file opening method
+location:
+	line 187
+evidence:
+	r only for read
+
+
+
+BUG#9
+description:
+	wrong loop control variable
+location
+	line 125
+evidence:
+	i++ in j? no make sense
+
+
+
+BUG#10
+description:
+	wrong operator
+location:
+	line 147
+evidence:
+	loop start from 0. So if use <= will result in one extra wrong loop

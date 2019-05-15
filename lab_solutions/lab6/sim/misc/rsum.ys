@@ -1,0 +1,53 @@
+# Name: Meng Yit Koh
+# ID: 517030990022
+
+	.pos	0
+
+init:	irmovq	stack, %rsp
+	irmovq	stack, %rbp
+	call	main
+	halt
+
+main:	pushq	%rbp
+	rrmovq	%rsp, %rbp
+	irmovq	ele1, %rcx
+	pushq	%rcx
+	call	rsum_list
+	rrmovq	%rbp, %rsp
+	popq	%rbp
+	ret
+
+rsum_list:	
+	pushq	%rbp
+	rrmovq	%rsp, %rbp
+	mrmovq	16(%rbp), %rcx
+	irmovq	$0, %rdx
+	subq	%rcx, %rdx
+	je	end
+	pushq	%rcx
+	mrmovq	8(%rcx), %rcx
+	pushq	%rcx
+	call 	rsum_list
+	popq	%rcx
+	popq	%rcx
+	mrmovq	0(%rcx), %rbx
+	addq	%rbx, %rax
+	rrmovq	%rbp, %rsp
+	popq	%rbp
+	ret
+end:	rrmovq	%rbp, %rsp
+	popq	%rbp
+	ret
+
+# Sample linked list
+	.align	8
+
+ele1:	.quad	0x00a
+	.quad	ele2
+ele2:	.quad	0x0b0
+	.quad	ele3
+ele3:	.quad	0xc00
+	.quad	0
+
+	.pos	0x200
+stack:
